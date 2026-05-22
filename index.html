@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>游戏宣传短视频脚本生成器</title>
+  <style>
+    :root {
+      --bg: #111318;
+      --panel: #191d25;
+      --panel-strong: #202633;
+      --text: #f3f5f7;
+      --muted: #aab1bd;
+      --line: #333b4a;
+      --red: #ff4f5e;
+      --gold: #ffc857;
+      --cyan: #56c7ff;
+      --green: #74d680;
+      --shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 79, 94, 0.16), transparent 28%),
+        radial-gradient(circle at 84% 16%, rgba(86, 199, 255, 0.14), transparent 28%),
+        linear-gradient(145deg, #0d0f13 0%, var(--bg) 46%, #151311 100%);
+      color: var(--text);
+      font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+    }
+
+    .app {
+      width: min(1440px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 28px 0;
+    }
+
+    header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status {
+      min-width: 190px;
+      border: 1px solid var(--line);
+      background: rgba(25, 29, 37, 0.72);
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(340px, 440px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(25, 29, 37, 0.88);
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+    }
+
+    form {
+      padding: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      color: #d8dee8;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #3a4353;
+      background: #111720;
+      color: var(--text);
+      border-radius: 7px;
+      padding: 11px 12px;
+      font: inherit;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(86, 199, 255, 0.12);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .ratio-buttons,
+    .style-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .style-buttons {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .chip {
+      border: 1px solid #3a4353;
+      background: #151b25;
+      color: #dce3ed;
+      border-radius: 7px;
+      min-height: 38px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .chip[aria-pressed="true"] {
+      border-color: var(--gold);
+      color: #101215;
+      background: linear-gradient(180deg, #ffe08a, var(--gold));
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .primary,
+    .secondary {
+      border: 0;
+      border-radius: 7px;
+      min-height: 44px;
+      padding: 0 16px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+    }
+
+    .primary {
+      flex: 1;
+      color: #160f0f;
+      background: linear-gradient(135deg, var(--gold), #ff7b54 48%, var(--red));
+    }
+
+    .secondary {
+      color: var(--text);
+      background: #252c38;
+      border: 1px solid #3b4556;
+    }
+
+    .primary:disabled,
+    .secondary:disabled {
+      opacity: 0.62;
+      cursor: wait;
+    }
+
+    .output {
+      min-height: 650px;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .output-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(32, 38, 51, 0.78);
+    }
+
+    .output-title {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .result {
+      margin: 0;
+      padding: 18px;
+      white-space: pre-wrap;
+      line-height: 1.72;
+      color: #eef3f8;
+      font-size: 15px;
+      min-height: 590px;
+      overflow: auto;
+    }
+
+    .placeholder {
+      color: var(--muted);
+    }
+
+    .error {
+      color: #ffb6bd;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 920px) {
+      .app {
+        width: min(100% - 24px, 720px);
+        padding: 18px 0;
+      }
+
+      header,
+      main {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .status {
+        text-align: left;
+      }
+
+      .row,
+      .ratio-buttons,
+      .style-buttons {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>游戏宣传短视频脚本生成器</h1>
+        <p class="subtitle">为 10-15 秒游戏宣传片生成钩子、分镜、字幕、配音和 AI 视频提示词。</p>
+      </div>
+      <div class="status" id="serverStatus">正在检查本地服务...</div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <form id="generatorForm">
+          <div class="field">
+            <label for="gameName">游戏名</label>
+            <input id="gameName" name="gameName" placeholder="例如：星域突击" autocomplete="off" required>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="gameGenre">游戏类型</label>
+              <input id="gameGenre" name="gameGenre" placeholder="动作 Roguelike" required>
+            </div>
+            <div class="field">
+              <label for="targetPlayers">目标玩家</label>
+              <input id="targetPlayers" name="targetPlayers" placeholder="喜欢快节奏战斗的玩家" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="coreSellingPoint">核心卖点</label>
+            <input id="coreSellingPoint" name="coreSellingPoint" placeholder="十秒一局，技能爆炸连锁" required>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="duration">视频时长</label>
+              <input id="duration" name="duration" value="15秒" placeholder="例如：10秒、12秒、15秒" required>
+            </div>
+            <div class="field">
+              <label for="ratio">视频比例</label>
+              <div class="ratio-buttons" id="ratioButtons">
+                <button class="chip" type="button" data-ratio="16:9">16:9</button>
+                <button class="chip" type="button" data-ratio="4:3">4:3</button>
+                <button class="chip" type="button" data-ratio="3:4">3:4</button>
+                <button class="chip" type="button" data-ratio="9:16" aria-pressed="true">9:16</button>
+              </div>
+              <input id="ratio" name="ratio" value="9:16" placeholder="例如：9:16" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>视频风格</label>
+            <div class="style-buttons" id="styleButtons">
+              <button class="chip" type="button" data-style="impact">燃向</button>
+              <button class="chip" type="button" data-style="suspense">悬念向</button>
+              <button class="chip" type="button" data-style="hybrid" aria-pressed="true">燃向 + 悬念</button>
+            </div>
+            <input type="hidden" id="style" name="style" value="hybrid">
+          </div>
+
+          <div class="field">
+            <label for="extraNotes">补充说明</label>
+            <textarea id="extraNotes" name="extraNotes" placeholder="例如：突出 Boss 登场、技能升级、失败反转、预约下载等"></textarea>
+          </div>
+
+          <p class="hint">MiniMax Key 只放在本地 .env 中，不会写进浏览器页面。</p>
+
+          <div class="actions">
+            <button class="primary" id="generateButton" type="submit">生成脚本</button>
+            <button class="secondary" id="copyButton" type="button">复制结果</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel output">
+        <div class="output-head">
+          <h2 class="output-title">生成结果</h2>
+          <div class="meta" id="resultMeta">等待输入</div>
+        </div>
+        <pre class="result placeholder" id="resultBox">填写左侧信息后生成。结果会包含分镜、字幕、屏幕大字、AI 视频提示词和配音提示词。</pre>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const form = document.querySelector("#generatorForm");
+    const resultBox = document.querySelector("#resultBox");
+    const resultMeta = document.querySelector("#resultMeta");
+    const generateButton = document.querySelector("#generateButton");
+    const copyButton = document.querySelector("#copyButton");
+    const serverStatus = document.querySelector("#serverStatus");
+    const ratioInput = document.querySelector("#ratio");
+    const styleInput = document.querySelector("#style");
+
+    function setPressed(buttons, activeButton) {
+      buttons.forEach(button => button.setAttribute("aria-pressed", String(button === activeButton)));
+    }
+
+    document.querySelectorAll("[data-ratio]").forEach(button => {
+      button.addEventListener("click", () => {
+        ratioInput.value = button.dataset.ratio;
+        setPressed([...document.querySelectorAll("[data-ratio]")], button);
+      });
+    });
+
+    ratioInput.addEventListener("input", () => {
+      document.querySelectorAll("[data-ratio]").forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.ratio === ratioInput.value.trim()));
+      });
+    });
+
+    document.querySelectorAll("[data-style]").forEach(button => {
+      button.addEventListener("click", () => {
+        styleInput.value = button.dataset.style;
+        setPressed([...document.querySelectorAll("[data-style]")], button);
+      });
+    });
+
+    async function checkHealth() {
+      try {
+        const response = await fetch("/api/health");
+        const data = await response.json();
+        serverStatus.textContent = `${data.provider} / ${data.model}`;
+      } catch {
+        serverStatus.textContent = "本地服务未连接";
+      }
+    }
+
+    function getFormData() {
+      return Object.fromEntries(new FormData(form).entries());
+    }
+
+    function setResult(text, type = "normal") {
+      resultBox.textContent = text;
+      resultBox.className = `result ${type === "error" ? "error" : ""} ${type === "placeholder" ? "placeholder" : ""}`;
+    }
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      generateButton.disabled = true;
+      resultMeta.textContent = "生成中...";
+      setResult("正在生成脚本，请稍等。");
+
+      try {
+        const response = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(getFormData())
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "生成失败");
+        }
+
+        setResult(data.text);
+        resultMeta.textContent = `${data.provider} / ${data.model}`;
+      } catch (error) {
+        setResult(error.message || "生成失败，请检查本地服务。", "error");
+        resultMeta.textContent = "生成失败";
+      } finally {
+        generateButton.disabled = false;
+      }
+    });
+
+    copyButton.addEventListener("click", async () => {
+      const text = resultBox.textContent.trim();
+      if (!text || resultBox.classList.contains("placeholder")) return;
+      await navigator.clipboard.writeText(text);
+      const old = copyButton.textContent;
+      copyButton.textContent = "已复制";
+      setTimeout(() => {
+        copyButton.textContent = old;
+      }, 1200);
+    });
+
+    checkHealth();
+  </script>
+</body>
+</html>
