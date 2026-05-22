@@ -26,8 +26,18 @@ function loadEnvFile() {
 }
 
 function getProvider() {
-  const provider = (process.env.MODEL_PROVIDER || "minimax").toLowerCase();
-  if (provider === "minimax-anthropic") return createMiniMaxAnthropicProvider(process.env);
+  const provider = (process.env.MODEL_PROVIDER || "minimax")
+    .toLowerCase()
+    .replace(/[\s_]+/g, "-");
+
+  if (["minimax-anthropic", "anthropic-compatible", "anthropic"].includes(provider)) {
+    return createMiniMaxAnthropicProvider(process.env);
+  }
+
+  if (["openai-compatible", "minimax", "minimax-openai"].includes(provider)) {
+    return createMiniMaxProvider(process.env);
+  }
+
   if (provider === "openai") return createOpenAIProvider(process.env);
   return createMiniMaxProvider(process.env);
 }

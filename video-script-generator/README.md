@@ -19,7 +19,7 @@ MINIMAX_API_KEY=你的_key
 3. 中国区 Token Plan 推荐配置：
 
 ```text
-MODEL_PROVIDER=minimax
+MODEL_PROVIDER=OpenAI Compatible
 MINIMAX_BASE_URL=https://api.minimaxi.com/v1
 MINIMAX_MODEL=MiniMax-M2.7
 ```
@@ -27,7 +27,7 @@ MINIMAX_MODEL=MiniMax-M2.7
 如果要尝试 Anthropic 兼容协议，改成：
 
 ```text
-MODEL_PROVIDER=minimax-anthropic
+MODEL_PROVIDER=Anthropic Compatible
 MINIMAX_ANTHROPIC_BASE_URL=https://api.minimaxi.com/anthropic
 MINIMAX_MODEL=MiniMax-M2.7
 ```
