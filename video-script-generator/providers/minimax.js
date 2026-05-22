@@ -16,7 +16,10 @@ function createMiniMaxProvider(env) {
       },
       body: JSON.stringify({
         model,
-        messages,
+        messages: messages.map(message => ({
+          role: message.role,
+          content: [{ type: "text", text: String(message.content || "") }]
+        })),
         temperature: options.temperature ?? 0.85,
         top_p: options.topP ?? 0.95,
         max_completion_tokens: options.maxCompletionTokens ?? 1800,
