@@ -1,0 +1,14 @@
+{
+  "name": "game-video-script-generator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local game promotion video script generator with MiniMax provider support.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
