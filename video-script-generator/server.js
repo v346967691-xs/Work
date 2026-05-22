@@ -4,6 +4,7 @@ const path = require("node:path");
 const { validateInput } = require("./src/validation");
 const { buildMessages } = require("./src/prompt");
 const { createMiniMaxProvider } = require("./providers/minimax");
+const { createMiniMaxAnthropicProvider } = require("./providers/minimax-anthropic");
 const { createOpenAIProvider } = require("./providers/openai");
 
 const ROOT = __dirname;
@@ -26,6 +27,7 @@ function loadEnvFile() {
 
 function getProvider() {
   const provider = (process.env.MODEL_PROVIDER || "minimax").toLowerCase();
+  if (provider === "minimax-anthropic") return createMiniMaxAnthropicProvider(process.env);
   if (provider === "openai") return createOpenAIProvider(process.env);
   return createMiniMaxProvider(process.env);
 }
@@ -52,6 +54,7 @@ function sendFile(res, filePath) {
       sendJson(res, 404, { error: "文件不存在" });
       return;
     }
+
     res.writeHead(200, {
       "Content-Type": contentTypes[ext] || "application/octet-stream",
       "Cache-Control": "no-store"

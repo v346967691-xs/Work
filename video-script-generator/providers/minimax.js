@@ -1,11 +1,11 @@
 function createMiniMaxProvider(env) {
   const apiKey = env.MINIMAX_API_KEY;
-  const baseUrl = (env.MINIMAX_BASE_URL || "https://api.minimax.io/v1").replace(/\/$/, "");
+  const baseUrl = (env.MINIMAX_BASE_URL || "https://api.minimaxi.com/v1").replace(/\/$/, "");
   const model = env.MINIMAX_MODEL || "MiniMax-M2.7";
 
   async function generate(messages, options = {}) {
     if (!apiKey) {
-      throw new Error("缺少 MINIMAX_API_KEY，请先在 .env 中配置 MiniMax Key。");
+      throw new Error("缺少 MINIMAX_API_KEY，请先在 .env 中配置 MiniMax Token Plan Key。");
     }
 
     const response = await fetch(`${baseUrl}/chat/completions`, {

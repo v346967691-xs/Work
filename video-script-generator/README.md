@@ -1,6 +1,6 @@
 # 游戏宣传短视频脚本生成器
 
-本地 HTML 工具，用于生成 10-15 秒游戏宣传短视频脚本。第一版默认连接 MiniMax，结构上保留 OpenAI-compatible provider，之后可以扩展其他模型。
+本地 HTML 工具，用于生成 10-15 秒游戏宣传短视频脚本。第一版默认连接 MiniMax 中国区 Token Plan，并保留 OpenAI-compatible provider，之后可以扩展其他模型。
 
 ## 使用方式
 
@@ -10,19 +10,35 @@
 Copy-Item .env.example .env
 ```
 
-2. 打开 `.env`，填入你的 MiniMax Key：
+2. 打开 `.env`，填入你的 MiniMax Token Plan Key：
 
 ```text
 MINIMAX_API_KEY=你的_key
 ```
 
-3. 启动本地服务：
+3. 中国区 Token Plan 推荐配置：
+
+```text
+MODEL_PROVIDER=minimax
+MINIMAX_BASE_URL=https://api.minimaxi.com/v1
+MINIMAX_MODEL=MiniMax-M2.7
+```
+
+如果要尝试 Anthropic 兼容协议，改成：
+
+```text
+MODEL_PROVIDER=minimax-anthropic
+MINIMAX_ANTHROPIC_BASE_URL=https://api.minimaxi.com/anthropic
+MINIMAX_MODEL=MiniMax-M2.7
+```
+
+4. 启动本地服务：
 
 ```powershell
 npm start
 ```
 
-4. 打开浏览器访问：
+5. 打开浏览器访问：
 
 ```text
 http://localhost:5177
@@ -39,12 +55,4 @@ http://localhost:5177
 
 ```powershell
 npm test
-```
-
-## MiniMax 接口
-
-本工具使用 MiniMax 的 OpenAI-compatible chat completions 格式，默认接口为：
-
-```text
-https://api.minimax.io/v1/chat/completions
 ```
